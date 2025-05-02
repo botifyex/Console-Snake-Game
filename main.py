@@ -62,9 +62,9 @@ class Snake:
         self.snake = [(size // 2, size // 2)]
         self.field[size // 2][size // 2] = SnakeEvent.PLAYER_HEAD
         
-        self.direction = Direction.RIGHT
         self.score = 0
         self.game_over = False
+        self.direction = Direction.RIGHT
         
         self.spawn_food()
     
@@ -101,7 +101,7 @@ class Snake:
             new_head = (head_x + 1, head_y)
         elif self.direction == Direction.LEFT:
             new_head = (head_x, head_y - 1)
-        else:  # RIGHT
+        else: # RIGHT
             new_head = (head_x, head_y + 1)
         
         new_head_x, new_head_y = new_head
@@ -115,7 +115,7 @@ class Snake:
         
         self.snake.insert(0, new_head)
 
-        self.field[head_x][head_y] = SnakeEvent.PLAYER_BODY        
+        self.field[head_x][head_y] = SnakeEvent.PLAYER_BODY
         self.field[new_head_x][new_head_y] = SnakeEvent.PLAYER_HEAD
         
         if not eat_food:
@@ -163,7 +163,7 @@ def main():
     game = Snake(20)
     
     try:
-        game.run()        
+        game.run()
     except KeyboardInterrupt:
         print("\nGame was interrupted by the user")
 
