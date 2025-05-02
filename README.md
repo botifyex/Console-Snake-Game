@@ -25,7 +25,7 @@ This project is a simple yet engaging implementation of the Snake game, designed
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/botifyex/snake-game.git
+   git clone https://github.com/botifyex/console-snake-game.git
    cd snake-game
    ```
 
