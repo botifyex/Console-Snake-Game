@@ -4,47 +4,48 @@ import random
 import ctypes
 from ctypes import wintypes
 
-# Key Codes
+# Virtual key codes for snake movement
 VK_UP = 0x26
 VK_DOWN = 0x28
 VK_LEFT = 0x25
 VK_RIGHT = 0x27
 
-
-user32 = ctypes.WinDLL('user32')
+# Initialize user32 library for Windows API interaction
+user32 = ctypes.WinDLL("user32")
 GetAsyncKeyState = user32.GetAsyncKeyState
 GetAsyncKeyState.argtypes = [wintypes.INT]
 GetAsyncKeyState.restype = wintypes.WORD
 
 
+# Utility functions
 def clear_console():
-    os.system('cls')
+    os.system("cls")
 
-def is_key_pressed(vk_code) -> bool:
+def is_key_pressed(vk_code: int) -> bool:
     return GetAsyncKeyState(vk_code) & 0x8000 != 0
 
 
+# Game data models
 class SnakeEvent:
     SPACE = 0
     WALL = 1
     PLAYER_HEAD = 2
     PLAYER_BODY = 3
-    APPLE = 4
-
+    FOOD = 4
 
 class SnakeSymbol:
-    SPACE = ' '
-    WALL = '#'
-    PLAYER_HEAD = '●'
-    PLAYER_BODY = '○'
-    APPLE = '•'
-
+    SPACE = " "
+    WALL = "#"
+    PLAYER_HEAD = "●"
+    PLAYER_BODY = "○"
+    FOOD = "•"
 
 class Direction:
-    UP    = 0
-    DOWN  = 1
-    LEFT  = 2
+    UP = 0
+    DOWN = 1
+    LEFT = 2
     RIGHT = 3
+
 
 
 class Snake:
@@ -65,10 +66,10 @@ class Snake:
         self.score = 0
         self.game_over = False
         
-        self.spawn_apple()
+        self.spawn_food()
     
 
-    def spawn_apple(self):
+    def spawn_food(self):
         empty_cells = []
         for i in range(self.size):
             for j in range(self.size):
@@ -77,7 +78,7 @@ class Snake:
         
         if empty_cells:
             x, y = random.choice(empty_cells)
-            self.field[x][y] = SnakeEvent.APPLE
+            self.field[x][y] = SnakeEvent.FOOD
     
 
     def handle_input(self):
@@ -110,19 +111,19 @@ class Snake:
             self.game_over = True
             return
         
-        eat_apple = self.field[new_head_x][new_head_y] == SnakeEvent.APPLE
+        eat_food = self.field[new_head_x][new_head_y] == SnakeEvent.FOOD
         
-        self.snake.insert(0, new_head)        
+        self.snake.insert(0, new_head)
 
         self.field[head_x][head_y] = SnakeEvent.PLAYER_BODY        
         self.field[new_head_x][new_head_y] = SnakeEvent.PLAYER_HEAD
         
-        if not eat_apple:
+        if not eat_food:
             tail_x, tail_y = self.snake.pop()
             self.field[tail_x][tail_y] = SnakeEvent.SPACE
         else:
             self.score += 1
-            self.spawn_apple()
+            self.spawn_food()
     
 
     def render(self):
@@ -140,8 +141,8 @@ class Snake:
                     line += SnakeSymbol.PLAYER_HEAD
                 elif cell == SnakeEvent.PLAYER_BODY:
                     line += SnakeSymbol.PLAYER_BODY
-                elif cell == SnakeEvent.APPLE:
-                    line += SnakeSymbol.APPLE
+                elif cell == SnakeEvent.FOOD:
+                    line += SnakeSymbol.FOOD
             print(line)
         
         if self.game_over:
@@ -153,7 +154,7 @@ class Snake:
             self.render()
             self.handle_input()
             self.update()
-            time.sleep(0.15)
+            time.sleep(0.15) # ~6 FPS
         
         self.render()
 
