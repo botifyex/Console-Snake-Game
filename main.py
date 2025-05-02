@@ -71,10 +71,10 @@ class Snake:
 
     def spawn_food(self):
         empty_cells = []
-        for i in range(self.size):
-            for j in range(self.size):
-                if self.field[i][j] == SnakeEvent.SPACE:
-                    empty_cells.append((i, j))
+        for x in range(self.size):
+            for y in range(self.size):
+                if self.field[x][y] == SnakeEvent.SPACE:
+                    empty_cells.append((x, y))
         
         if empty_cells:
             x, y = random.choice(empty_cells)
