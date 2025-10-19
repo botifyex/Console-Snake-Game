@@ -84,7 +84,7 @@ Score: 2
 
 To modify the game, adjust the following in `snake.py`:
 - **Field Size**: Change the `size` parameter in `Snake(20)` (e.g., `Snake(30)` for a 30x30 field).
-- **Game Speed**: Adjust the `time.sleep(0.15)` value in the `run` method (lower values increase speed, e.g., `0.01` for ~60 FPS).
+- **Game Speed**: Adjust the `fps_loop` and `fps_render` value in the `__init__` method.
 - **Symbols**: Modify `SnakeSymbol` class to use different ASCII/Unicode characters.
 
 ## 🙌 Acknowledgments

@@ -2,6 +2,7 @@ import os
 import time
 import random
 import ctypes
+from enum import StrEnum, IntEnum
 from ctypes import wintypes
 
 # Virtual key codes for snake movement
@@ -26,26 +27,25 @@ def is_key_pressed(vk_code: int) -> bool:
 
 
 # Game data models
-class SnakeEvent:
+class SnakeEvent(IntEnum):
     SPACE = 0
     WALL = 1
     PLAYER_HEAD = 2
     PLAYER_BODY = 3
     FOOD = 4
 
-class SnakeSymbol:
+class SnakeSymbol(StrEnum):
     SPACE = " "
     WALL = "#"
     PLAYER_HEAD = "●"
     PLAYER_BODY = "○"
     FOOD = "•"
 
-class Direction:
+class Direction(IntEnum):
     UP = 0
     DOWN = 1
     LEFT = 2
     RIGHT = 3
-
 
 
 class Snake:
@@ -61,10 +61,16 @@ class Snake:
         
         self.snake = [(size // 2, size // 2)]
         self.field[size // 2][size // 2] = SnakeEvent.PLAYER_HEAD
+
+        self.fps_loop   = 1/30 # 30 FPS
+        self.fps_render = 1/6  # 6 FPS
         
         self.score = 0
         self.game_over = False
         self.direction = Direction.RIGHT
+
+        self.last_input = time.perf_counter()
+        self.last_render = time.perf_counter()
         
         self.spawn_food()
     
@@ -151,10 +157,18 @@ class Snake:
 
     def run(self):
         while not self.game_over:
-            self.render()
-            self.handle_input()
-            self.update()
-            time.sleep(0.15) # ~6 FPS
+            current_time = time.perf_counter()
+            
+            if current_time - self.last_input > self.fps_loop:
+                self.handle_input()
+                self.last_input = current_time
+            
+            if current_time - self.last_render > self.fps_render:
+                self.update()
+                self.render()
+                self.last_render = current_time
+            
+            time.sleep(self.fps_loop)
         
         self.render()
 
